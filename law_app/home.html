@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<head>
+  <title>Law Assistant App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('law.webp') no-repeat center center fixed;
+      background-size: contain;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center; 
+      position: relative;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      padding: 30px;
+      border-radius: 12px;
+      width: 50%;
+      max-width: 350px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      font-size: 16px;
+      resize: vertical;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background-color: #3498db;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    #result {
+      margin-top: 30px;
+      background: rgba(236, 240, 241, 0.6);
+      padding: 20px;
+      border-radius: 12px;
+      color: #34495e;
+    }
+
+    /* Logout button fixed ONLY at top-right corner */
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 18px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logout button fixed top-right -->
+  <button class="logout-btn" onclick="logout()">Logout</button>
+
+  <div class="container">
+    <h1>Law Assistant App</h1>
+    <h2 id="welcomeMsg"></h2>
+    <textarea id="chatbox" placeholder="Type your legal problem here..."></textarea>
+    <button id="submitBtn">Get Law Info</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Redirect to login if not logged in
+    if (!localStorage.getItem('lawUser')) {
+      window.location.href = "login.html";
+    }
+
+    // Show username from logged-in user
+    const user = JSON.parse(localStorage.getItem('lawUser'));
+    if (user) {
+      document.getElementById('welcomeMsg').innerText = "Welcome, " + user.username + "!";
+    }
+
+    // Law database
+    const lawsDB = [
+      {
+        keywords: ["protest", "freedom of speech", "freedom of assembly", "right to protest", "demonstration", "rally"],
+        section: "Article 19 - Freedom of Speech and Assembly",
+        explanation: "You have the right to peacefully protest under Article 19.",
+        pros: "Protects your right to express opinions and assemble peacefully.",
+        cons: "Protests must be peaceful and follow local laws to avoid legal issues."
+      },
+      {
+        keywords: ["privacy", "personal data", "confidentiality", "private life", "data protection"],
+        section: "Article 21 - Right to Privacy",
+        explanation: "The right to privacy is protected under Article 21.",
+        pros: "Guards against unlawful intrusion.",
+        cons: "Subject to reasonable restrictions in the interest of security and public order."
+      },
+      {
+        keywords: ["self protection", "self defense", "protect myself", "defend myself", "right to defend", "right of private defence"],
+        section: "Sections 96-106 IPC – Right of Private Defence",
+        explanation: "You have the right to protect yourself and others against certain crimes under Sections 96 to 106 of the Indian Penal Code.",
+        pros: "Allows immediate action to protect life and property without waiting for law enforcement.",
+        cons: "Excessive force beyond what is necessary may result in legal consequences."
+      }
+    ];
+
+    // Handle query
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const query = document.getElementById('chatbox').value.toLowerCase().trim();
+      let foundLaw = null;
+
+      for (const law of lawsDB) {
+        if (law.keywords.some(keyword => query.includes(keyword))) {
+          foundLaw = law;
+          break;
+        }
+      }
+
+      let output = "";
+      if (foundLaw) {
+        output += `<h3>${foundLaw.section}</h3>`;
+        output += `<p><strong>Explanation:</strong> ${foundLaw.explanation}</p>`;
+        output += `<p><strong>Pros:</strong> ${foundLaw.pros}</p>`;
+        output += `<p><strong>Cons:</strong> ${foundLaw.cons}</p>`;
+      } else {
+        output = "<p>Sorry, no related law section found for your query.</p>";
+      }
+      document.getElementById('result').innerHTML = output;
+      document.getElementById('chatbox').value = "";
+    });
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('lawUser');
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

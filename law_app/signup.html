@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signup - Law Assistant</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('constitution.webp') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: flex-start; 
+      align-items: center; 
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: #27ae60;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #219150;
+    }
+    p {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create Account</h2>
+    <input type="text" id="signupUsername" placeholder="Enter username">
+    <input type="password" id="signupPassword" placeholder="Enter password">
+    <button onclick="signup()">Signup</button>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <script>
+  function signup() {
+    const username = document.getElementById('signupUsername').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+
+    if (!username || !password) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("lawUsers")) || [];
+
+    if (users.some(user => user.username === username)) {
+      alert("Username already exists. Try another one.");
+      return;
+    }
+
+    users.push({ username, password });
+    localStorage.setItem("lawUsers", JSON.stringify(users));
+
+    alert("Signup successful! Please login.");
+    window.location.href = "login.html"; // 👈 goes to login page
+  }
+</script>
+
+</body>
+</html>

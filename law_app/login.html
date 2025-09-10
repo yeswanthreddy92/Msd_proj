@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Law Assistant</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('Rule-of-Law.jpg') no-repeat center center fixed;
+      background-size: contain;
+      display: flex;
+      justify-content: flex-start; /* Left align */
+      align-items: center; /* Center vertically */
+      min-height: 100vh; /* Full height */
+      padding-left: 50px; /* Space from left edge */
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    p { margin-top: 10px; }
+    #loginError {
+      color: red;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginError">Invalid credentials!</p>
+    <p>Don't have an account? <a href="signup.html">Signup</a></p>
+  </div>
+
+  <script>
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      // Get all signed-up users from localStorage
+      let users = JSON.parse(localStorage.getItem('lawUsers')) || [];
+
+      // Find a matching user
+      const validUser = users.find(user => user.username === username && user.password === password);
+
+      if (validUser) {
+  localStorage.setItem('lawUser', JSON.stringify(validUser));
+
+  fetch("home.html")
+    .then(res => {
+      if (res.ok) {
+        window.location.href = "home.html";
+      } else {
+        window.location.href = "index.html";
+      }
+    })
+    .catch(() => {
+      window.location.href = "index.html";
+    });
+      } else {
+        document.getElementById('loginError').style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
